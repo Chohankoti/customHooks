@@ -3,15 +3,17 @@ import { useFetchData, usePostData } from '../customHooks/useFetchData';
 
 export default function Interceptor_Get() {
     const [apiResults, setApiResults] = useState({
-        posts: { data: null, loading: true, error: null, refetch: null },
+        posts: { data: null, loading: false, error: null, refetch: null },
         users: { data: null, loading: true, error: null, refetch: null },
     });
+
+    const [isProductsRequest, setIsProductsRequest] = useState(false);
 
     const postsEndpoint = useMemo(() => '/products', []);
     const usersEndpoint = useMemo(() => '/students', []);
 
-    const postsResult = useFetchData(postsEndpoint);
-    const usersResult = useFetchData(usersEndpoint);
+    const postsResult = useFetchData(postsEndpoint, isProductsRequest);
+    const usersResult = useFetchData(usersEndpoint, true);
 
     const updateApiResults = useCallback(() => {
         setApiResults({
@@ -31,11 +33,13 @@ export default function Interceptor_Get() {
     const postsError = useMemo(() => posts.error, [posts.error]);
     const usersError = useMemo(() => users.error, [users.error]);
 
-    const handleReCallPosts = useCallback(() => {
-        if (posts.refetch) {
+    const handleFetchPosts = useCallback(() => {
+        if (isProductsRequest && posts.refetch) {
             posts.refetch();
-            console.log('Re-called posts');
+        } else {
+            setIsProductsRequest(true);
         }
+
     }, [posts.refetch]);
 
     const renderedContent = useMemo(() => {
@@ -53,14 +57,14 @@ export default function Interceptor_Get() {
 
         return (
             <div>
-                <button onClick={handleReCallPosts}>Fetch Posts</button>
+                <button onClick={handleFetchPosts}>Fetch Posts</button>
                 <h1>Posts</h1>
                 <pre>{JSON.stringify(posts.data, null, 2)}</pre>
                 <h1>Users</h1>
                 <pre>{JSON.stringify(users.data, null, 2)}</pre>
             </div>
         );
-    }, [isLoading, postsError, usersError, posts.data, users.data, handleReCallPosts]);
+    }, [isLoading, postsError, usersError, posts.data, users.data, handleFetchPosts]);
 
     return renderedContent;
 }

@@ -23,7 +23,7 @@ export default function App() {
       )}
 
       {/* Main content */}
-      <Interceptor_Post />
+      <Interceptor_Get />
     </>
   );
 }

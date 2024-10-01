@@ -34,13 +34,19 @@ api.interceptors.response.use(
 );
 
 // Custom hook to fetch data (GET requests)
-const useFetchData = (endpoint) => {
+const useFetchData = (endpoint, isRequest = false) => {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isRequest);
   const [error, setError] = useState(null);
 
   // Memoize the fetchData function
   const fetchData = useCallback(async () => {
+    if (!isRequest) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await api.get(endpoint);
       setData(response.data);
@@ -54,7 +60,7 @@ const useFetchData = (endpoint) => {
     } finally {
       setLoading(false);
     }
-  }, [endpoint]);
+  }, [endpoint, isRequest]);
 
   const refetch = useCallback(() => {
     fetchData();
