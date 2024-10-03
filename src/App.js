@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Interceptor_Post from './components/Interceptor_Post';
 import Interceptor_Get from './components/Interceptor_Get';
+import Optimized_Sort from './components/Optimized_Sort';
 import { setGlobalErrorHandler } from './customHooks/useFetchData';
 
 export default function App() {
@@ -22,8 +23,10 @@ export default function App() {
         </div>
       )}
 
-      {/* Main content */}
-      <Interceptor_Get />
+      <Optimized_Sort />
     </>
   );
 }
+
+
+
